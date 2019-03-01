@@ -1,26 +1,42 @@
 import React, { Component } from 'react';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { Layout } from 'antd';
+
+import MenuResto from './components/layout/MenuResto/MenuResto';
+import ListRestaurant from './views/ListRestaurant/ListRestaurant';
+import InputRestaurant from './views/InputRestaurant/InputRestaurant';
+
 import logo from './logo.svg';
-import './App.css';
+import './App.scss';
+
+const { Header, Content, Footer } = Layout;
 
 class App extends Component {
   render() {
     return (
+      <BrowserRouter>
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+        <Layout className="App__layout">
+          <div className="App__header-top">
+            <img src={logo} className="App-logo" alt="logo" />
+          </div>
+          <Header>
+            <MenuResto />
+          </Header>
+          <Content style={{ padding: '0 50px', marginTop: 64 }}>
+            <div style={{ background: '#fff', padding: 24}}>
+            <Switch>
+              <Route path="/list-restaurant" component={ListRestaurant} />
+              <Route path="/input-restaurant" component={InputRestaurant} />
+            </Switch> 
+            </div>
+          </Content>
+          <Footer style={{ textAlign: 'center' }}>
+            Created by : aztran
+          </Footer>
+        </Layout>
       </div>
+      </BrowserRouter>
     );
   }
 }
