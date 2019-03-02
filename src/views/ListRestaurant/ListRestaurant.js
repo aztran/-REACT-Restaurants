@@ -1,18 +1,28 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import { fetchResto, deleteResto, FetchOne } from '../../store/actions';
 
-import { fetchResto } from '../../store/actions';
-
-import { Button, Input, Icon} from 'antd';
+import { Form, Button, DatePicker, Input, notification, Icon, Divider, Modal} from 'antd';
 import Highlighter from 'react-highlight-words';
 
 import BaseTable from '../../components/common/Table/BaseTable';
 import { connect } from 'react-redux';
+
+const openNotificationWithIcon = (type) => {
+  notification[type]({
+    message: 'Success',
+    description: 'Data has been deleted'
+  });
+  
+};
 
 class ListRestaurant extends Component {
 
   state = {
     searchText: '',
     filterDropdownVisible: false,
+    visible: false,
+    confirmLoading: false,
   }
 
   getColumnSearchProps = (dataIndex) => ({
@@ -73,17 +83,24 @@ class ListRestaurant extends Component {
     this.setState({ searchText: '' });
   }
 
+  deleteHandler = (e) => {
+    this.props.deleteResto(e);
+    this.props.getRestoData();
+    openNotificationWithIcon('success');
+  }
 
   componentDidMount () {
     this.props.getRestoData();
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(){
     this.props.getRestoData();
   }
 
   render () {
-    const  columns = [
+    const { getFieldDecorator } = this.props.form;
+    const { visible, confirmLoading } = this.state;
+    const columns = [
       {
         title: 'Name',
         dataIndex: 'Name',
@@ -95,6 +112,19 @@ class ListRestaurant extends Component {
         dataIndex: 'Description',
         key: 'Description',
       },
+      {
+        title: 'Action',
+        render: (text,record) => (
+          <span>
+             <Link to={'/' + record.id} key={record.id}>
+              <Button type="primary" > Edit</Button>
+              </Link>
+            <Divider type="vertical" />
+            <Button type="danger" onClick={() => this.deleteHandler(record.id)}> Delete</Button>
+          </span>
+        ) ,
+        width: 150,
+      }
       // onFilter: (value, record) => record.address.indexOf(value) === 0,
     ];
 
@@ -102,11 +132,53 @@ class ListRestaurant extends Component {
       <div>
         <h2>Data Restaurants</h2>
          <BaseTable
+         
           id="id"
           loading={this.state.isLoading}
           data={this.props.data}
           columns={columns}
         />
+
+        <Modal
+          title={this.state.titleModal}
+          visible={visible}
+          confirmLoading={confirmLoading}
+          footer={[]}
+          onCancel={this.handleCancel}
+        >
+          <Form onSubmit={this.handleSubmit}>
+          <Form.Item
+            label="Name"
+          >
+            {getFieldDecorator('title', {
+              rules: [{ required: true, message: 'Please Input the title'}],
+            })(
+              <Input placeholder="Input Title"
+                onChange={(event) => this.setState({name: event.target.value})}
+              />
+            )}
+          </Form.Item>
+
+          <Form.Item
+            label="Open Time"
+          >
+            {getFieldDecorator('Date', {
+              rules: [{ required: true, message: 'Please Input the Date'}],
+            })(
+              <DatePicker
+                showTime
+                placeholder="Select Time"
+                onChange={(dateString) => this.setState({description: dateString})}
+              />
+            )}
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit" className="login-form-button">
+              Submit
+            </Button>
+            </Form.Item>
+        </Form>
+        </Modal>
       </div>
     )
   }
@@ -114,14 +186,19 @@ class ListRestaurant extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    data: state.restaurants
+    data: state.restaurants,
+    resto: state.getResto
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getRestoData: () => dispatch(fetchResto())
+    getRestoData: () => dispatch(fetchResto()),
+    deleteResto: (id) => dispatch(deleteResto(id)),
+    loadData: (id) => dispatch(FetchOne(id))
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps) (ListRestaurant);
+const wrapper = Form.create({ name: 'normal_login' })(ListRestaurant);
+
+export default connect(mapStateToProps, mapDispatchToProps) (wrapper);
