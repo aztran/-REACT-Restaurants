@@ -20,6 +20,7 @@ class Home extends Component {
             <li>Add a new Restaurant</li>
             <li>Delete Restaurant</li>
             <li>Update Restaurant</li>
+            <li>Search Data Restaurant</li>
           </ul>
         </div>
       </div>

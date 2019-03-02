@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from '../../axios';
 
 import BaseCard from '../../components/common/Card/BaseCard';
-import { Pagination, Row, Col, Select, Input } from 'antd';
+import { Pagination, Row, Col, Select, Input, Spin } from 'antd';
 import { connect } from 'react-redux';
 
 
@@ -98,18 +98,20 @@ class Search extends Component {
 
     return (
       <div>
-        <div className="searchBar">
-          Filtered By :
-          <Select defaultValue="selected" style={{ width: 120 }} onChange={this.handleSelect}>
-            <Option value="selected" disabled>Select</Option>
-            <Option value="name">Name</Option>
-            <Option value="open">Open </Option>
-           
-          </Select>
-          {}
-          <Input type="text" className="form-control form-control-lg" placeholder="Search Restaurant" onChange={this.filterList}/>
-        </div>
-        <Row>
+        <Spin spinning={this.state.isLoading}>
+          <div className="searchBar">
+        
+            Filtered By :
+            <Select defaultValue="selected" style={{ width: 120 }} onChange={this.handleSelect}>
+              <Option value="selected" disabled>Select</Option>
+              <Option value="name">Name</Option>
+              <Option value="open">Open </Option>
+            
+            </Select>
+            {}
+            <Input type="text" className="form-control form-control-lg" placeholder="Search Restaurant" onChange={this.filterList}/>
+          </div>
+          <Row>
             {cardResto && cardResto.length > 0 && cardResto.slice(this.state.minValue, this.state.maxValue).map(val => (
               <Col span={12} key={val.id}> 
               <div className="card">
@@ -129,6 +131,7 @@ class Search extends Component {
             showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
             pageSize={10}
           />
+        </Spin>
       </div>
     )
   }
