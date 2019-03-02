@@ -34,7 +34,6 @@ class App extends Component {
               <Route path="/list-restaurant" component={ListRestaurant} />
               <Route path="/input-restaurant" component={InputRestaurant} />
               <Route path="/:id" component={EditRestaurant} />
-             
             </Switch> 
             </div>
           </Content>
