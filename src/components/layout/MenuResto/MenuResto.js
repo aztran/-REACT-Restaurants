@@ -7,7 +7,6 @@ const MenuResto = () => (
   <Menu
     theme="dark"
     mode="horizontal"
-    defaultSelectedKeys={['1']}
     style={{ lineHeight: '64px' }}
   >
     <Menu.Item key="1">
@@ -21,6 +20,10 @@ const MenuResto = () => (
     <Menu.Item key="3">
       Add New Restaurant
     <Link to="/input-restaurant" />
+    </Menu.Item>
+    <Menu.Item key="4">
+     Search
+    <Link to="/search" />
     </Menu.Item>
   </Menu>
 )
