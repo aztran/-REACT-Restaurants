@@ -111,6 +111,7 @@ class ListRestaurant extends Component {
         title: 'Description',
         dataIndex: 'Description',
         key: 'Description',
+        ...this.getColumnSearchProps('Description'),
       },
       {
         title: 'Action',
