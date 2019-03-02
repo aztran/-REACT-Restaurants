@@ -11,7 +11,6 @@ export const addResto = (name, description) => {
         type: 'ADD_RESTO'
       })
     })
-
   }
 }
 
@@ -38,37 +37,25 @@ export const fetchResto = () => {
   }
 }
 
-
 export const deleteResto = (id) => {
   return dispatch => {
     axios.delete('/data/' + id + '.json')
-      .then(response => {
-        console.log(response);
-        dispatch({
-          type: 'DELETE_RESTO',
-          payload: response.data
-        })
+    .then(response => {
+      console.log(response);
+      dispatch({
+        type: 'DELETE_RESTO',
+        payload: response.data
       })
+    })
   }
 }
 
-export const FetchOne = (id) => {
+export const FetchOne = (arrResto) => {
   return dispatch => {
-    axios.get('/data/' + id + '.json')
-      .then(res => {
-        // console.log(response);
-        //console.log(res.data);
-        let post = res.data;
-        post['id'] = id;
-        console.log(post);
-        // console.log(id);
-        dispatch({
-          type: 'FETCH_ONE',
-          id: post.id,
-          name: post.Name,
-          description: post.Description
-        })
-      })
+    dispatch({
+      type: 'FETCH_ONE',
+      payload: arrResto,
+    })
   }
 }
 
@@ -78,12 +65,11 @@ export const updateResto = (id,name, description) => {
       Name: name,
       Description: description
     })
-      .then(response => {
-        console.log(response);
-        // return;
-        dispatch({
-          type: 'UPDATE_RESTO',
-        })
+    .then(response => {
+      console.log(response);
+      dispatch({
+        type: 'UPDATE_RESTO',
       })
+    })
   }
 }

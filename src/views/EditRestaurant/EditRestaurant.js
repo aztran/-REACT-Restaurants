@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import axios from '../../axios';
 
-import { Button, Input, notification, Form } from 'antd';
+import { Button, Input, notification, Form, Spin } from 'antd';
 
 import { addResto, updateResto} from '../../store/actions';
-// import './InputRestaurant.scss';
 
 
 const openNotificationWithIcon = (type) => {
@@ -19,6 +19,8 @@ class EditRestaurant extends Component {
   state = {
     name: '',
     description: '',
+    arrResto: [],
+    loading: true,
   }
 
   handleSubmit = (e) => {
@@ -30,28 +32,39 @@ class EditRestaurant extends Component {
         openNotificationWithIcon('success');
         this.props.history.replace('/list-restaurant');
       }
-
     });
   }
 
-  loadData() {
+  // loadData() {
+  //   const id=this.props.match.params.id;
+  //   console.log(id);
+  //   this.props.loadData(id);
+  //   this.props.form.setFieldsValue({
+  //     title: this.state.name,
+  //     description: this.state.description,
+  //     id: id
+  //   })
+  // }
+
+  fetchData() {
     const id=this.props.match.params.id;
-    console.log(id);
-    this.props.loadData(id);
-    this.props.form.setFieldsValue({
-      title: this.props.name,
-      description: this.props.description,
-      id: id
+    axios.get('/data/' + id + '.json')
+      .then(res => {
+        this.setState({loading: false});
+        let post = res.data;
+        post['id'] = id;
+        this.setState({arrResto: post});
+        this.props.form.setFieldsValue({
+          title: res.data.Name,
+          description: res.data.Description,
+          id: id
+        })
     })
-    console.log(this.props.name);
   }
 
-  // componentDidUpdate() {
-  //   this.loadData();
-  // }
+
   componentDidMount() {
-   this.loadData();
-    
+   this.fetchData();
   }
 
 
@@ -60,47 +73,48 @@ class EditRestaurant extends Component {
 
     return (
       <div className="input-resto">
-        <h1>Edit Restaurant</h1>
-        <Form onSubmit={this.handleSubmit}>
-          <Form.Item>
-            {getFieldDecorator('id', {
-              rules: [{ required: false, message: 'Please Input the title'}],
-            })(
-              <Input type="hidden"
-              />
-            )}
-          </Form.Item>
-          <Form.Item
-            label="Name"
-          >
-            {getFieldDecorator('title', {
-              rules: [{ required: true, message: 'Please Input the title'}],
-            })(
-              <Input placeholder="Input Title"
-                onChange={(event) => this.setState({name: event.target.value})}
-               
-              />
-            )}
-          </Form.Item>
-
-          <Form.Item
-            label="Open Time"
-          >
-            {getFieldDecorator('description', {
-              rules: [{ required: true, message: 'Please Input the Date'}],
-            })(
-             
-              <Input placeholder="Input Description"
-                onChange={(event) => this.setState({description: event.target.value})}
-             />
-            )}
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit" className="login-form-button">
-              Submit
-            </Button>
+        <Spin spinning={this.state.loading}>
+          <h1>Edit Restaurant</h1>
+          <Form onSubmit={this.handleSubmit}>
+            <Form.Item>
+              {getFieldDecorator('id', {
+                rules: [{ required: false, message: 'Please Input the title'}],
+              })(
+                <Input type="hidden"
+                />
+              )}
             </Form.Item>
-        </Form>
+            <Form.Item
+              label="Name"
+            >
+              {getFieldDecorator('title', {
+                rules: [{ required: true, message: 'Please Input the title'}],
+              })(
+                <Input placeholder="Input Title"
+                  onChange={(event) => this.setState({name: event.target.value})}
+                />
+              )}
+            </Form.Item>
+
+            <Form.Item
+              label="Open Time"
+            >
+              {getFieldDecorator('description', {
+                rules: [{ required: true, message: 'Please Input the Date'}],
+              })(
+              
+                <Input placeholder="Input Description"
+                  onChange={(event) => this.setState({description: event.target.value})}
+              />
+              )}
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit" className="login-form-button">
+                Submit
+              </Button>
+              </Form.Item>
+          </Form>
+        </Spin>
       </div>
     )
   }
@@ -119,7 +133,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => {
   return {
     submitResto: (name, description) => dispatch(addResto(name, description)),
-    updateResto: (id, name, description) => dispatch(updateResto(id, name, description))
+    updateResto: (id, name, description) => dispatch(updateResto(id, name, description)),
+    // fetchData: (arrResto) => dispatch(FetchOne(arrResto))
   }
 }
 
