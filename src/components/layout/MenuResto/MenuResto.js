@@ -12,6 +12,7 @@ const MenuResto = () => (
   >
     <Menu.Item key="1">
       Home
+      <Link to="/" />
     </Menu.Item>
     <Menu.Item key="2">
       List Restaurants
