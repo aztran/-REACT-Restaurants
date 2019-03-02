@@ -6,6 +6,7 @@ import { Button, DatePicker, Input, notification, Form } from 'antd';
 import { addResto } from '../../store/actions';
 import './InputRestaurant.scss';
 
+
 const openNotificationWithIcon = (type) => {
   notification[type]({
     message: 'Success',
@@ -33,10 +34,8 @@ class InputRestaurant extends Component {
     });
   }
 
-
   render() {
     const { getFieldDecorator } = this.props.form;
-
     return (
       <div className="input-resto">
         <h1>Add a New Restaurant</h1>
@@ -71,7 +70,6 @@ class InputRestaurant extends Component {
               Submit
             </Button>
             </Form.Item>
-
         </Form>
       </div>
     )
@@ -80,7 +78,8 @@ class InputRestaurant extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    status: state.status
+    status: state.status,
+    restaurants: state.restaurants,
   }
 }
 
